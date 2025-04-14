@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
 const ENDPOINT = "http://localhost:5000";
@@ -13,14 +13,14 @@ const ChatProvider = ({ children }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   
   const socketRef = useRef(null); 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Initialize user from localStorage
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     setUser(userInfo);
-    if (!userInfo) history.push("/");
-  }, [history]);
+    if (!userInfo) navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     if (user && !socketRef.current) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
 import {
   Button,
@@ -28,7 +28,7 @@ const Login = () => {
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const { setUser } = ChatState();
 
   const bgColor = useColorModeValue("gray.50", "gray.800");
@@ -74,7 +74,7 @@ const Login = () => {
       setUser(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      history.push("/chats");
+      navigate("/chats");
     } catch (error) {
       toast({
         title: "Login Failed",
@@ -186,7 +186,7 @@ const Login = () => {
               variant="link"
               color="teal.500"
               size="sm"
-              onClick={() => history.push("/signup")}
+              onClick={() => navigate("/signup")}
             >
               Sign up
             </Button>

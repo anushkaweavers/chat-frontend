@@ -1,5 +1,5 @@
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { Box, Stack, Text, Flex} from "@chakra-ui/layout";
+import { Box, Stack, Text, Flex } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -13,8 +13,7 @@ const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const { selectedChat, setSelectedChat, user, chats = [], setChats } = ChatState();
   const toast = useToast();
 
   const fetchChats = async () => {
@@ -27,7 +26,7 @@ const MyChats = ({ fetchAgain }) => {
       };
 
       const { data } = await axios.get("/api/chat", config);
-      setChats(data);
+      setChats(Array.isArray(data) ? data : []); // Ensure data is an array
     } catch (error) {
       toast({
         title: "Error Occurred!",
@@ -37,13 +36,17 @@ const MyChats = ({ fetchAgain }) => {
         isClosable: true,
         position: "bottom-left",
       });
+      setChats([]); // Set to empty array on error
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    const userInfo = localStorage.getItem("userInfo");
+    if (userInfo) {
+      setLoggedUser(JSON.parse(userInfo));
+    }
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
@@ -110,7 +113,7 @@ const MyChats = ({ fetchAgain }) => {
       >
         {isLoading ? (
           <ChatLoading />
-        ) : chats?.length > 0 ? (
+        ) : chats && chats.length > 0 ? (
           <Stack 
             spacing={2} 
             overflowY="auto" 

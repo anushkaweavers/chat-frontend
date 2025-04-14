@@ -9,17 +9,17 @@ import {
     Text,
   } from "@chakra-ui/react";
   import { useEffect } from "react";
-  import { useHistory } from "react-router";
+  import { useNavigate } from "react-router-dom"; // Change from 'useHistory' to 'useNavigate'
   import Login from "../components/Authentication/Login";
   import Signup from "../components/Authentication/Signup";
   
   function Homepage() {
-    const history = useHistory();
+    const navigate = useNavigate(); // Update to useNavigate
     useEffect(() => {
       const user = JSON.parse(localStorage.getItem("userInfo"));
   
-      if (user) history.push("/chats");
-    }, [history]);
+      if (user) navigate("/chats"); // Update to navigate instead of history.push
+    }, [navigate]);
   
     return (
       <Container maxW="xl" centerContent>
@@ -40,12 +40,12 @@ import {
         </Box>
         <Box bg="white" w="100%" p={4} borderRadius="lg" borderWidth="1px">
           <Tabs isFitted variant="soft-rounded">
-            <TabList mb="0px"> 
+            <TabList mb="0px">
               <Tab>Login</Tab>
               <Tab>Sign Up</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel p={2}> 
+              <TabPanel p={2}>
                 <Login />
               </TabPanel>
               <TabPanel p={2}>
