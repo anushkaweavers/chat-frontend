@@ -13,6 +13,7 @@ import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
+import { useNavigate } from "react-router-dom";
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -23,6 +24,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
   const selectedChatCompareRef = useRef();
   const typingTimeoutRef = useRef();
+  const navigate = useNavigate();
 
   const defaultOptions = {
     loop: true,
@@ -31,8 +33,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
-  };
-  
+  }; 
   const {
     selectedChat,
     setSelectedChat,
@@ -42,10 +43,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket,
     socketConnected,
   } = ChatState();
-
   const fetchMessages = async () => {
     if (!selectedChat) return;
-
     try {
       const config = {
         headers: {
@@ -74,6 +73,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       });
     }
   };
+  
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       socket?.emit("stop typing", selectedChat._id);
@@ -119,6 +119,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       clearTimeout(typingTimeoutRef.current);
     };
   }, [selectedChat]);
+
   useEffect(() => {
     if (!socket) return;
 
@@ -127,7 +128,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         !selectedChatCompareRef.current ||
         selectedChatCompareRef.current._id !== newMessageReceived.chat._id
       ) {
-        // Add to notification if not already present
         if (!notification.some(notif => notif._id === newMessageReceived._id)) {
           setNotification([newMessageReceived, ...notification]);
           setFetchAgain(!fetchAgain);
@@ -136,14 +136,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setMessages(prev => [...prev, newMessageReceived]);
       }
     };
-
     const handleTyping = () => setIsTyping(true);
     const handleStopTyping = () => setIsTyping(false);
-
     socket.on("message received", handleMessageReceived);
     socket.on("typing", handleTyping);
     socket.on("stop typing", handleStopTyping);
-
     return () => {
       socket.off("message received", handleMessageReceived);
       socket.off("typing", handleTyping);
@@ -164,7 +161,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-
     // Set new timeout
     typingTimeoutRef.current = setTimeout(() => {
       socket.emit("stop typing", selectedChat._id);

@@ -11,11 +11,9 @@ const ChatProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
   const [chats, setChats] = useState();
   const [socketConnected, setSocketConnected] = useState(false);
-  
   const socketRef = useRef(null); 
   const navigate = useNavigate();
 
-  // Initialize user from localStorage
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     setUser(userInfo);

@@ -8,6 +8,7 @@ import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { Button, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
+import { useNavigate } from "react-router-dom";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
@@ -15,6 +16,7 @@ const MyChats = ({ fetchAgain }) => {
 
   const { selectedChat, setSelectedChat, user, chats = [], setChats } = ChatState();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const fetchChats = async () => {
     setIsLoading(true);
